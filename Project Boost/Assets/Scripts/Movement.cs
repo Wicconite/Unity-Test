@@ -20,14 +20,12 @@ public class Movement : MonoBehaviour
     Rigidbody rb;
     AudioSource audioSource;
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         ProcessThrust();
@@ -38,20 +36,11 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
-            if(!audioSource.isPlaying)
-            {
-                audioSource.PlayOneShot(mainEngine);
-            }
-            if(!mainBooster.isPlaying)
-            {
-            mainBooster.Play(mainEngine);
-            }
+            StartThrusting();
         }
         else
         {
-            audioSource.Stop();
-            mainBooster.Stop();
+            StopThrusting();
         }
     }
 
@@ -59,24 +48,59 @@ public class Movement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A))
         {
-            ApplyRotation(rotationThrust);
-            if (!rightBooster.isPlaying)
-            {
-                rightBooster.Play();
-            }
+            RotateLeft();
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            ApplyRotation(-rotationThrust);
-            if (!leftBooster.isPlaying)
-            {
-                leftBooster.Play();
-            }
+            RotateRight();
         }
         else
         {
-            leftBooster.Stop();
-            rightBooster.Stop();
+            StopRotating();
+        }
+    }
+
+    void StartThrusting()
+    {
+        rb.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(mainEngine);
+        }
+        if (!mainBooster.isPlaying)
+        {
+            mainBooster.Play(mainEngine);
+        }
+    }
+
+    private void StopThrusting()
+    {
+        audioSource.Stop();
+        mainBooster.Stop();
+    }
+
+
+    private void StopRotating()
+    {
+        leftBooster.Stop();
+        rightBooster.Stop();
+    }
+
+    private void RotateRight()
+    {
+        ApplyRotation(-rotationThrust);
+        if (!leftBooster.isPlaying)
+        {
+            leftBooster.Play();
+        }
+    }
+
+    private void RotateLeft()
+    {
+        ApplyRotation(rotationThrust);
+        if (!rightBooster.isPlaying)
+        {
+            rightBooster.Play();
         }
     }
 
